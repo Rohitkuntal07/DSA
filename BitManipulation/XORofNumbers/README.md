@@ -1,7 +1,7 @@
-## Power Set | Bit Manipulation
+## Find XOR of Numbers from L to R
 
 ### Problem Statement
-Given an array of numbers, print all possible subsets (power set) using bit manipulation.
+Given two integers L and R, find the XOR of all numbers in the range [L, R].
 
 ---
 
@@ -10,52 +10,60 @@ Given an array of numbers, print all possible subsets (power set) using bit mani
 Example 1
 
 Input:  
-nums = [1, 2, 3]
+L = 3, R = 5
 
 Output:  
-[[], [1], [2], [3], [1,2], [2,3], [1,3], [1,2,3]]
+2
 
 Explanation:  
-A power set contains all possible subsets of the array, including the empty subset.
+3 ^ 4 ^ 5 = 2
 
 ---
 
 Example 2
 
 Input:  
-nums = [5, 7, 8]
+L = 1, R = 3
 
 Output:  
-[[], [5], [7], [8], [5,7], [7,8], [5,8], [5,7,8]]
+0
 
 Explanation:  
-All possible combinations of elements are included in the power set.
+1 ^ 2 ^ 3 = 0
 
 ---
 
 ### Approach
 
-Use bitmasking to represent subsets.
+Use the repeating XOR pattern from 1 to n.
 
-For an array of size N:
-- Total subsets = 2^N
-- Each number from 0 to (2^N - 1) represents one subset.
+Pattern for XOR(1 to n):
+
+- If n % 4 == 0 → result = n  
+- If n % 4 == 1 → result = 1  
+- If n % 4 == 2 → result = n + 1  
+- If n % 4 == 3 → result = 0  
+
+Using this pattern:
+XOR(L to R) = XOR(1 to R) ^ XOR(1 to L-1)
 
 ---
 
 ### Algorithm
 
-1. Let n be the size of the array.  
-2. Total subsets = 1 << n.  
-3. Iterate from mask = 0 to (2^n - 1):
-   - Create an empty subset.  
-4. For each bit position i:
-   - Check if the i-th bit in mask is set:
-     - (mask & (1 << i)) != 0  
-   - If set, include nums[i] in the subset.  
-5. Add the subset to the result list.  
-6. Return all subsets.
+1. Create a function xorUpto(n):
+   - If n % 4 == 0 → return n  
+   - If n % 4 == 1 → return 1  
+   - If n % 4 == 2 → return n + 1  
+   - If n % 4 == 3 → return 0  
 
+2. Compute:
+   - x1 = xorUpto(R)  
+   - x2 = xorUpto(L - 1)  
+
+3. Return:
+   - x1 ^ x2
+  
 ---
 
 ### Author
