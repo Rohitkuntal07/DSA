@@ -1,15 +1,14 @@
-## Check for Balanced Parentheses
+## Implement Min Stack
 
 ### Problem Statement
-Given a string str containing only the characters '(', ')', '{', '}', '[' and ']', determine whether the string is balanced.
+Design a stack that supports the following operations in constant time:
 
-A string is considered balanced if:
+- push(int val)
+- pop()
+- top()
+- getMin()
 
-- Every opening bracket has a corresponding closing bracket.
-- Brackets are closed in the correct order.
-- Every closing bracket matches the most recent unmatched opening bracket.
-
-Return true if the string is balanced, otherwise return false.
+The stack should always be able to return the minimum element in O(1) time.
 
 ---
 
@@ -18,72 +17,179 @@ Return true if the string is balanced, otherwise return false.
 Example 1
 
 Input:  
-str = "()[{}()]"
+["MinStack", "push", "push", "push", "getMin", "pop", "top", "getMin"]  
+[[], [-2], [0], [-3], [], [], [], []]
 
 Output:  
-true
+[null, null, null, null, -3, null, 0, -2]
 
-Explanation:  
-Every opening bracket has a matching closing bracket in the correct order.
+Explanation:
+
+- push(-2)
+- push(0)
+- push(-3)
+- getMin() → -3
+- pop()
+- top() → 0
+- getMin() → -2
 
 ---
 
 Example 2
 
 Input:  
-str = "[(]"
+["MinStack", "push", "push", "getMin", "push", "pop", "getMin", "top"]  
+[[], [5], [1], [], [3], [], [], []]
 
 Output:  
-false
+[null, null, null, 1, null, null, 1, 1]
 
-Explanation:  
-The opening bracket '(' is closed by ']', which is not its matching pair.
+Explanation:
+
+- push(5)
+- push(1)
+- getMin() → 1
+- push(3)
+- pop()
+- getMin() → 1
+- top() → 1
 
 ---
 
+## Brute Force Approach (O(2N) Space)
+
 ### Approach
 
-Use a stack to keep track of opening brackets.
+Use two stacks:
 
-Since brackets must be closed in the reverse order of opening, a stack (LIFO) is the ideal data structure.
+- Main Stack → Stores all elements.
+- Min Stack → Stores the minimum element corresponding to each position.
 
 ---
 
 ### Algorithm
 
-1. Create an empty stack.
+#### Push Operation
 
-2. Traverse each character in the string.
+1. Push the element into the main stack.
+2. If the min stack is empty:
+   - Push the element into min stack.
+3. Otherwise:
+   - Push min(currentElement, minStack.peek()).
 
-3. If the character is an opening bracket:
-   - Push it onto the stack.
-   - '(', '{', '['
+---
 
-4. If the character is a closing bracket:
-   - If the stack is empty:
-     - Return false.
-   - Otherwise:
-     - Check whether the top element of the stack is the corresponding opening bracket.
-     - If not, return false.
-     - Otherwise, pop the top element.
+#### Pop Operation
 
-5. After processing the entire string:
-   - If the stack is empty:
-     - Return true.
-   - Otherwise:
-     - Return false.
+1. Pop from the main stack.
+2. Pop from the min stack.
+
+---
+
+#### Top Operation
+
+1. Return mainStack.peek().
+
+---
+
+#### GetMin Operation
+
+1. Return minStack.peek().
 
 ---
 
 ### Time Complexity
 
-- O(N)
+- Push → O(1)
+- Pop → O(1)
+- Top → O(1)
+- GetMin → O(1)
+
+### Space Complexity
+
+- O(2N)
+
+---
+
+## Optimal Approach (O(N) Space)
+
+### Approach
+
+Use a single stack and a variable minElement.
+
+Store encoded values whenever a new minimum is inserted.
+
+Encoding Formula:
+
+encodedValue = 2 * newMin - oldMin
+
+---
+
+### Algorithm
+
+#### Push Operation
+
+1. If stack is empty:
+   - Push value.
+   - Set minElement = value.
+
+2. If value >= minElement:
+   - Push value normally.
+
+3. If value < minElement:
+   - Push:
+     - 2 * value - minElement
+   - Update:
+     - minElement = value
+
+---
+
+#### Pop Operation
+
+1. If stack is empty:
+   - Return.
+
+2. Pop top element.
+
+3. If popped value >= minElement:
+   - Normal element.
+
+4. If popped value < minElement:
+   - Previous minimum exists.
+   - Restore:
+     - minElement = 2 * minElement - poppedValue
+
+---
+
+#### Top Operation
+
+1. If stack is empty:
+   - Return -1.
+
+2. If top >= minElement:
+   - Return top.
+
+3. Otherwise:
+   - Return minElement.
+
+---
+
+#### GetMin Operation
+
+1. Return minElement.
+
+---
+
+### Time Complexity
+
+- Push → O(1)
+- Pop → O(1)
+- Top → O(1)
+- GetMin → O(1)
 
 ### Space Complexity
 
 - O(N)
-
----
 
 ### Author
 - Rohit
